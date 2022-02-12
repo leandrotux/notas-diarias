@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
                 controller: _descricaoController,
                 decoration: InputDecoration(
                   labelText: "Descrição",
-                  hintText: "Digite a descrição...",
+                  hintText: "Digite a descrição....",
                 ),
               ),
             ],
