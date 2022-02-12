@@ -6,6 +6,53 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  TextEditingController _tituloController = TextEditingController();
+  TextEditingController _descricaoController = TextEditingController();
+
+  _exibirTelaCadastro() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Adicionar anotação"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _tituloController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  labelText: "Titulo",
+                  hintText: "Digite título...",
+                ),
+              ),
+              TextField(
+                controller: _descricaoController,
+                decoration: InputDecoration(
+                  labelText: "Descrição",
+                  hintText: "Digite a descrição...",
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            FlatButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text("Cancelar"),
+            ),
+            FlatButton(
+              onPressed: () {
+                //Salvar dados
+                Navigator.pop(context);
+              },
+              child: Text("Salvar"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +65,9 @@ class _HomeState extends State<Home> {
         backgroundColor: Colors.lightGreen,
         foregroundColor: Colors.white,
         child: Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          _exibirTelaCadastro();
+        },
       ),
     );
   }
