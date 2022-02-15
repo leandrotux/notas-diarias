@@ -16,7 +16,10 @@ class notaDiariaHelper {
   get db async {
     if (_db != null) {
       return _db;
-    } else {}
+    } else {
+      _db = await inicializarDB();
+      return _db;
+    }
   }
 
   _onCreate(Database db, int version) async {
