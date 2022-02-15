@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:notas_diarias/helper/notaDiariaHelper.dart';
+import 'package:notas_diarias/model/NotasDiarias.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,6 +10,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   TextEditingController _tituloController = TextEditingController();
   TextEditingController _descricaoController = TextEditingController();
+
+  var _db = notaDiariaHelper();
 
   _exibirTelaCadastro() {
     showDialog(
@@ -42,7 +46,7 @@ class _HomeState extends State<Home> {
             ),
             FlatButton(
               onPressed: () {
-                //Salvar dados
+                _salvarNotasDiarias();
                 Navigator.pop(context);
               },
               child: Text("Salvar"),
@@ -51,6 +55,17 @@ class _HomeState extends State<Home> {
         );
       },
     );
+  }
+
+  _salvarNotasDiarias() async {
+    String titulo = _tituloController.text;
+    String descricao = _descricaoController.text;
+
+    NotasDiarias nota =
+        NotasDiarias(titulo, descricao, DateTime.now().toString());
+
+    int resultado = await _db.salvarNotasdiarias(nota);
+    print("Salvar nota: " + resultado.toString());
   }
 
   @override
