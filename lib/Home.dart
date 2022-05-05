@@ -57,6 +57,11 @@ class _HomeState extends State<Home> {
     );
   }
 
+  _recuperarAnotacoes() async {
+    List anotacoesRecuperadas = await _db.recuperarAnotacoes();
+    print("Lista anotações" + anotacoesRecuperadas.toString());
+  }
+
   _salvarNotasDiarias() async {
     String titulo = _tituloController.text;
     String descricao = _descricaoController.text;
@@ -66,10 +71,14 @@ class _HomeState extends State<Home> {
 
     int resultado = await _db.salvarNotasdiarias(nota);
     print("Salvar nota: " + resultado.toString());
+
+    _tituloController.clear();
+    _descricaoController.clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    _recuperarAnotacoes();
     return Scaffold(
       appBar: AppBar(
         title: Text("Minhas anotações"),

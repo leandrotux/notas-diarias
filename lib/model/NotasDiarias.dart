@@ -1,20 +1,27 @@
 class NotasDiarias {
   int? id;
-  String titulo;
-  String descricao;
-  String data;
+  String? titulo;
+  String? descricao;
+  String? data;
 
   NotasDiarias(this.titulo, this.descricao, this.data);
 
+  NotasDiarias.fromMap(Map map) {
+    this.id = map["id"];
+    this.titulo = map["titulo"];
+    this.descricao = map["descricao"];
+    this.data = map["data"];
+  }
+
   Map toMap() {
     Map<String, dynamic> map = {
-      "titulo": this.titulo,
-      "descricao": this.descricao,
-      "data": this.data,
+      "titulo": titulo,
+      "descricao": descricao,
+      "data": data,
     };
 
-    if (this.id != null) {
-      map["id"] = this.id;
+    if (id != null) {
+      map["id"] = id;
     }
 
     return map;

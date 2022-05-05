@@ -42,8 +42,14 @@ class notaDiariaHelper {
 
   Future<int> salvarNotasdiarias(NotasDiarias notas) async {
     var bancoDados = await db;
-
     int id = await bancoDados.insert(nomeTabela, notas.toMap());
     return id;
+  }
+
+  recuperarAnotacoes() async {
+    var bancoDados = await db;
+    String sql = " SELECT * FROM $nomeTabela ORDER BY data DESC ";
+    List anotacoes = await bancoDados.rawQuery(sql);
+    return anotacoes;
   }
 }
