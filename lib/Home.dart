@@ -13,6 +13,8 @@ class _HomeState extends State<Home> {
 
   var _db = notaDiariaHelper();
 
+  List<NotasDiarias> _anotacoes = List.empty();
+
   _exibirTelaCadastro() {
     showDialog(
       context: context,
@@ -59,7 +61,19 @@ class _HomeState extends State<Home> {
 
   _recuperarAnotacoes() async {
     List anotacoesRecuperadas = await _db.recuperarAnotacoes();
-    print("Lista anotações" + anotacoesRecuperadas.toString());
+
+    List<NotasDiarias> listaTemporaria = List.empty(growable: true);
+
+    for (var item in anotacoesRecuperadas) {
+      NotasDiarias anotacao = NotasDiarias.fromMap(item);
+      listaTemporaria.add(anotacao);
+    }
+
+    setState(() {
+      _anotacoes = listaTemporaria;
+    });
+
+    listaTemporaria = List.empty();
   }
 
   _salvarNotasDiarias() async {
@@ -74,17 +88,41 @@ class _HomeState extends State<Home> {
 
     _tituloController.clear();
     _descricaoController.clear();
+
+    _recuperarAnotacoes();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _recuperarAnotacoes();
   }
 
   @override
   Widget build(BuildContext context) {
-    _recuperarAnotacoes();
     return Scaffold(
       appBar: AppBar(
         title: Text("Minhas anotações"),
         backgroundColor: Colors.lightGreen,
       ),
-      body: Container(),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+                itemCount: _anotacoes.length,
+                itemBuilder: (context, index) {
+                  final item = _anotacoes[index];
+
+                  return Card(
+                    child: ListTile(
+                      title: Text("${item.titulo}"),
+                      subtitle: Text("${item.data} - ${item.descricao}"),
+                    ),
+                  );
+                }),
+          )
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.lightGreen,
         foregroundColor: Colors.white,
