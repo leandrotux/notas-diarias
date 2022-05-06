@@ -17,12 +17,27 @@ class _HomeState extends State<Home> {
 
   List<NotasDiarias> _anotacoes = List.empty();
 
-  _exibirTelaCadastro() {
+  _exibirTelaCadastro({NotasDiarias? anotacao}) {
+    String textoSalvarAtualizar = "";
+    String tituloDialog = "";
+
+    if (anotacao == null) {
+      _tituloController.text = "";
+      _descricaoController.text = "";
+      tituloDialog = "Adicionar anotação";
+      textoSalvarAtualizar = "Salvar";
+    } else {
+      _tituloController.text = anotacao.titulo.toString();
+      _descricaoController.text = anotacao.descricao.toString();
+      tituloDialog = "Atualizar anotação";
+      textoSalvarAtualizar = "Atualizar";
+    }
+
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("Adicionar anotação"),
+          title: Text(tituloDialog),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -50,10 +65,10 @@ class _HomeState extends State<Home> {
             ),
             FlatButton(
               onPressed: () {
-                _salvarNotasDiarias();
+                _salvarAtualizarNotasDiarias(anotacaoSelecionada: anotacao);
                 Navigator.pop(context);
               },
-              child: Text("Salvar"),
+              child: Text(textoSalvarAtualizar),
             ),
           ],
         );
@@ -78,15 +93,19 @@ class _HomeState extends State<Home> {
     listaTemporaria = List.empty();
   }
 
-  _salvarNotasDiarias() async {
+  _salvarAtualizarNotasDiarias({NotasDiarias? anotacaoSelecionada}) async {
     String titulo = _tituloController.text;
     String descricao = _descricaoController.text;
-
-    NotasDiarias nota =
-        NotasDiarias(titulo, descricao, DateTime.now().toString());
-
-    int resultado = await _db.salvarNotasdiarias(nota);
-    print("Salvar nota: " + resultado.toString());
+    if (anotacaoSelecionada == null) {
+      NotasDiarias nota =
+          NotasDiarias(titulo, descricao, DateTime.now().toString());
+      int resultado = await _db.salvarNotasdiarias(nota);
+    } else {
+      anotacaoSelecionada.titulo = titulo.toString();
+      anotacaoSelecionada.descricao = descricao.toString();
+      anotacaoSelecionada.data = DateTime.now().toString();
+      int resultado = await _db.atualizarNotasDiarias(anotacaoSelecionada);
+    }
 
     _tituloController.clear();
     _descricaoController.clear();
@@ -129,6 +148,33 @@ class _HomeState extends State<Home> {
                       title: Text("${item.titulo}"),
                       subtitle: Text(
                           "${_formatarData(item.data.toString())} - ${item.descricao}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _exibirTelaCadastro(anotacao: item);
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {},
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 0),
+                              child: Icon(
+                                Icons.remove_circle,
+                                color: Colors.red,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   );
                 }),

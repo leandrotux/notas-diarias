@@ -52,4 +52,11 @@ class notaDiariaHelper {
     List anotacoes = await bancoDados.rawQuery(sql);
     return anotacoes;
   }
+
+  Future<int> atualizarNotasDiarias(NotasDiarias notas) async {
+    var bancoDados = await db;
+
+    return await bancoDados.update(nomeTabela, notas.toMap(),
+        where: "id = ?", whereArgs: [notas.id]);
+  }
 }
