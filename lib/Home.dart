@@ -93,6 +93,11 @@ class _HomeState extends State<Home> {
     listaTemporaria = List.empty();
   }
 
+  _removeNotasDiarias(int? id) async {
+    await _db.removerNotasDiarias(id!);
+    _recuperarAnotacoes();
+  }
+
   _salvarAtualizarNotasDiarias({NotasDiarias? anotacaoSelecionada}) async {
     String titulo = _tituloController.text;
     String descricao = _descricaoController.text;
@@ -164,7 +169,9 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              _removeNotasDiarias(item.id);
+                            },
                             child: Padding(
                               padding: EdgeInsets.only(right: 0),
                               child: Icon(
